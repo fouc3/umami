@@ -177,6 +177,9 @@ export default {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  experimental: {
+    serverComponentsExternalPackages: ['@prisma/client', 'bcryptjs', 'ipaddr.js'],
+  },
   typescript: {
     ignoreBuildErrors: true,
   },
