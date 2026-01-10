@@ -79,7 +79,18 @@ export async function getLocation(ip: string = '', headers: Headers, hasPayloadI
     }
   }
 
-  return null;
+  try {
+    const response = await fetch(`http://ip-api.com/json/${ip}?fields=regionName,city,district`);
+    const data = await response.json();
+
+    return {
+      country: undefined,
+      region: data.regionName,
+      city: data.district ? `${data.city}, ${data.district}` : data.city,
+    };
+  } catch {
+    return null;
+  }
 }
 
 export async function getClientInfo(request: Request, payload: Record<string, any>) {
