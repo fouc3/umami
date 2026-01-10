@@ -80,11 +80,11 @@ export async function getLocation(ip: string = '', headers: Headers, hasPayloadI
   }
 
   try {
-    const response = await fetch(`http://ip-api.com/json/${ip}?fields=regionName,city,district`);
+    const response = await fetch(`http://ip-api.com/json/${ip}?fields=country,regionName,city,district`);
     const data = await response.json();
 
     return {
-      country: undefined,
+      country: data.country,
       region: data.regionName,
       city: data.district ? `${data.city}, ${data.district}` : data.city,
     };
