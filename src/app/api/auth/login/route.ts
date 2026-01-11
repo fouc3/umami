@@ -8,11 +8,13 @@ import redis from '@/lib/redis';
 import { parseRequest } from '@/lib/request';
 import { json, unauthorized } from '@/lib/response';
 import { getUserByUsername } from '@/queries/prisma';
+import { verifyTurnstile } from '@/lib/turnstile';
 
 export async function POST(request: Request) {
   const schema = z.object({
     username: z.string(),
     password: z.string(),
+    turnstileToken: z.string().optional(),
   });
 
   const { body, error } = await parseRequest(request, schema, { skipAuth: true });
@@ -21,7 +23,11 @@ export async function POST(request: Request) {
     return error();
   }
 
-  const { username, password } = body;
+  const { username, password, turnstileToken } = body;
+
+  if (process.env.TURNSTILE_SECRET_KEY && !(await verifyTurnstile(turnstileToken, process.env.TURNSTILE_SECRET_KEY))) {
+    return unauthorized({ code: 'invalid-turnstile' });
+  }
 
   const user = await getUserByUsername(username, { includePassword: true });
 

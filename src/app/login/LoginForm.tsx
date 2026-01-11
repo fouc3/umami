@@ -9,7 +9,9 @@ import {
   PasswordField,
   TextField,
 } from '@umami/react-zen';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { Turnstile } from '@/components/input/Turnstile';
 import { useMessages, useUpdateQuery } from '@/components/hooks';
 import { Logo } from '@/components/svg';
 import { setClientAuthToken } from '@/lib/client';
@@ -19,15 +21,19 @@ export function LoginForm() {
   const { formatMessage, labels, getErrorMessage } = useMessages();
   const router = useRouter();
   const { mutateAsync, error } = useUpdateQuery('/auth/login');
+  const [turnstileToken, setTurnstileToken] = useState('');
 
   const handleSubmit = async (data: any) => {
-    await mutateAsync(data, {
-      onSuccess: async ({ token, user }) => {
-        setClientAuthToken(token);
-        setUser(user);
-        router.push('/');
+    await mutateAsync(
+      { ...data, turnstileToken },
+      {
+        onSuccess: async ({ token, user }) => {
+          setClientAuthToken(token);
+          setUser(user);
+          router.push('/');
+        },
       },
-    });
+    );
   };
 
   return (
@@ -54,12 +60,18 @@ export function LoginForm() {
         >
           <PasswordField autoComplete="current-password" />
         </FormField>
+        {process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY && (
+          <Turnstile
+            siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY}
+            onSuccess={setTurnstileToken}
+          />
+        )}
         <FormButtons>
           <FormSubmitButton
             data-test="button-submit"
             variant="primary"
             style={{ flex: 1 }}
-            isDisabled={false}
+            isDisabled={!!process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY && !turnstileToken}
           >
             {formatMessage(labels.login)}
           </FormSubmitButton>
