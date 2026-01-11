@@ -9,9 +9,9 @@ import {
   PasswordField,
   TextField,
 } from '@umami/react-zen';
-import { Turnstile } from '@marsidev/react-turnstile';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { Turnstile } from '@/components/input/Turnstile';
 import { useMessages, useUpdateQuery } from '@/components/hooks';
 import { Logo } from '@/components/svg';
 import { setClientAuthToken } from '@/lib/client';

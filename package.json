@@ -63,7 +63,6 @@
     "@date-fns/utc": "^1.2.0",
     "@fontsource/inter": "^5.2.8",
     "@hello-pangea/dnd": "^17.0.0",
-    "@marsidev/react-turnstile": "^1.4.1",
     "@prisma/adapter-pg": "^6.19.1",
     "@prisma/client": "^6.19.1",
     "@prisma/extension-read-replicas": "^0.4.1",
